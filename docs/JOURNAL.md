@@ -28,3 +28,24 @@
 
 **Reste à faire**
 - Phase 1 : plan d'ingestion et de parsing à valider.
+
+## 23–24/10/2026 — Phase 1
+
+**Fait**
+- Téléchargement du corpus via Cellar et cnil.fr, avec un manifeste SHA-256 (`rag fetch` / `rag verify`).
+- Parsing en passages citables : AI Act et RGPD (articles, paragraphes, points, considérants, annexes), fiches CNIL (sections). 1 721 passages au total.
+- Deux stratégies de découpage, taille fixe (1 331 chunks) et structurelle (2 232 chunks), toutes deux encodées avec Qwen3-Embedding-0.6B dans pgvector.
+- Génération sourcée avec qwen3:8b (Ollama) : refus sans appel au LLM quand aucun passage n'est trouvé, et contrôle de chaque citation.
+- Accès via `rag ask`, `POST /ask` et une UI Streamlit (`make ui`) : chat, exemples (dont des cas bancaires), citations cliquables vers le texte officiel, extraits récupérés avec leurs scores.
+
+**Problèmes rencontrés**
+- Indexation interrompue : grâce au cache d'embeddings (modèle, SHA-256 du texte), la reprise n'a recalculé que les textes manquants.
+- Qwen3-Embedding passé en float16 sur GPU pour partager les 8 Go de VRAM avec le LLM.
+- Avec un contexte de 16k, qwen3:8b tournait à 20 % sur CPU (11 à 20 s par réponse). En passant à 8k (`llm_num_ctx`), il tient entièrement sur le GPU : environ 5 s par réponse. Le 1er appel « à froid » prenait 140 s, d'où le préchargement du modèle dans l'UI.
+- Console Windows en cp1252 : la CLI force désormais l'UTF-8.
+
+**Constat qualité (à mesurer en Phase 2)**
+- Sur le scoring de crédit, la réponse cite le considérant 58 mais pas l'annexe III 5(b), qui fonde la qualification de haut risque.
+
+**Reste à faire**
+- Phase 2 : jeu d'évaluation (format, outil de revue Streamlit, validation par Njee).
