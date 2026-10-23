@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Secrets
+.env
+
+# Données téléchargées et caches (régénérables par les scripts d'ingestion)
+data/raw/
+data/cache/
