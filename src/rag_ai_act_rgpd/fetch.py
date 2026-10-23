@@ -45,6 +45,7 @@ def fetch_all(
             manifest_path.write_text(
                 json.dumps(manifest, indent=2, ensure_ascii=False, sort_keys=True) + "\n",
                 encoding="utf-8",
+                newline="\n",
             )
             time.sleep(DELAY_BETWEEN_REQUESTS_S)
     return manifest
