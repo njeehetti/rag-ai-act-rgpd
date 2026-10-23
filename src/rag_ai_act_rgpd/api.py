@@ -2,7 +2,10 @@
 
 from typing import Annotated
 
-from fastapi import Depends, FastAPI
+import httpx
+import psycopg
+from fastapi import Depends, FastAPI, HTTPException
+from psycopg_pool import PoolTimeout
 from pydantic import BaseModel, Field
 
 from rag_ai_act_rgpd import __version__
@@ -35,6 +38,8 @@ class Usage(BaseModel):
 class AskResponse(BaseModel):
     answer: str
     refused: bool
+    grounded: bool = Field(description="au moins une citation vérifiée et aucune inventée")
+    truncated: bool = Field(description="réponse ou prompt tronqué par le LLM")
     citations: list[Citation]
     invalid_citations: list[str]
     context_ids: list[str]
@@ -57,12 +62,19 @@ def health() -> dict[str, str]:
 
 @app.post("/ask")
 def ask(request: AskRequest, rag: Annotated[Rag, Depends(get_rag)]) -> AskResponse:
-    result = rag.ask(request.question)
+    try:
+        result = rag.ask(request.question)
+    except (httpx.HTTPError, psycopg.OperationalError, PoolTimeout) as exc:
+        raise HTTPException(
+            503, f"Service indisponible (base PostgreSQL ou Ollama) : {exc}"
+        ) from exc
     answer = result.answer
     completion = answer.completion
     return AskResponse(
         answer=answer.answer,
         refused=answer.refused,
+        grounded=answer.grounded,
+        truncated=answer.truncated,
         citations=[
             Citation(passage_id=p.id, label=p.citation_label, url=p.url, text=p.text)
             for p in answer.citations

@@ -22,6 +22,8 @@ class Completion:
     input_tokens: int
     output_tokens: int
     latency_ms: float
+    # Réponse coupée (max_tokens atteint) ou prompt tronqué par la fenêtre de contexte.
+    truncated: bool = False
 
 
 class LLMClient(Protocol):
@@ -80,4 +82,6 @@ class OllamaClient:
             input_tokens=int(body.get("prompt_eval_count", 0)),
             output_tokens=int(body.get("eval_count", 0)),
             latency_ms=(time.perf_counter() - start) * 1000,
+            truncated=body.get("done_reason") == "length"
+            or int(body.get("prompt_eval_count", 0)) >= self._options["num_ctx"],
         )

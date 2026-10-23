@@ -1,5 +1,6 @@
 from collections.abc import Iterator
 
+import httpx
 import pytest
 from fastapi.testclient import TestClient
 
@@ -51,6 +52,8 @@ def test_ask_returns_answer_citations_and_disclaimer(client: TestClient) -> None
     assert response.status_code == 200
     body = response.json()
     assert body["refused"] is False
+    assert body["grounded"] is True
+    assert body["truncated"] is False
     assert body["citations"] == [
         {
             "passage_id": "aiact:art50:p1",
@@ -61,6 +64,18 @@ def test_ask_returns_answer_citations_and_disclaimer(client: TestClient) -> None
     ]
     assert body["usage"] == {"model": "qwen3:8b", "input_tokens": 1200, "output_tokens": 80}
     assert "pas un conseil juridique" in body["disclaimer"]
+
+
+class DownRag:
+    def ask(self, question: str) -> RagResult:
+        raise httpx.ConnectError("Connection refused")
+
+
+def test_unreachable_backend_is_a_503_with_a_message(client: TestClient) -> None:
+    app.dependency_overrides[get_rag] = DownRag
+    response = client.post("/ask", json={"question": "Obligations d'un chatbot ?"})
+    assert response.status_code == 503
+    assert "Ollama" in response.json()["detail"]
 
 
 def test_ask_rejects_empty_question(client: TestClient) -> None:

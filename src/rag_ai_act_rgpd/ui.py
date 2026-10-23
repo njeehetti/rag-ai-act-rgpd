@@ -37,6 +37,10 @@ def render_answer(result: RagResult) -> None:
     else:
         st.markdown(text)
 
+    if answer.truncated:
+        st.warning("Réponse ou contexte tronqué par le LLM : la réponse peut être incomplète.")
+    if not answer.refused and not answer.citations:
+        st.warning("Aucune source vérifiable dans cette réponse : ne pas s'y fier.")
     if answer.invalid_citations:
         st.error(
             "Citations absentes des passages fournis (à ne pas prendre pour des sources) : "

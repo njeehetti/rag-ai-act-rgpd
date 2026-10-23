@@ -8,11 +8,12 @@ class FakeLLM:
 
     def __init__(self, reply: str) -> None:
         self.reply = reply
+        self.truncated = False
         self.calls: list[list[Message]] = []
 
     def complete(self, messages: list[Message]) -> Completion:
         self.calls.append(messages)
-        return Completion(self.reply, self.model, 100, 20, 1.0)
+        return Completion(self.reply, self.model, 100, 20, 1.0, truncated=self.truncated)
 
 
 def passage(pid: str, label: str, text: str = "texte") -> Passage:
@@ -70,3 +71,41 @@ def test_prompt_contains_labelled_excerpts_and_question() -> None:
     assert "N'invente jamais de référence" in system.content
     assert "[AI Act, art. 50 §1]\nLes fournisseurs veillent…" in user.content
     assert user.content.endswith("Question : Quelles obligations ?")
+
+
+ART5_P1 = passage(
+    "aiact:art5:p1", "[AI Act, art. 5 §1]", "Les pratiques suivantes sont interdites : a) …"
+)
+
+
+def test_citation_of_a_point_resolves_to_its_paragraph() -> None:
+    # Les points a), b)… restent dans le passage du paragraphe : le modèle les cite pourtant.
+    reply = "Interdit [AI Act, art. 5 §1 a] et [AI Act, art. 5 §1, point b bis]."
+    answer = answer_question("q", [ART5_P1], FakeLLM(reply))
+    assert [p.id for p in answer.citations] == ["aiact:art5:p1"]
+    assert answer.invalid_citations == []
+
+
+def test_inserted_paragraph_is_not_its_neighbour() -> None:
+    # « §1 bis » est un autre paragraphe (inséré par amendement), pas un point du §1.
+    answer = answer_question("q", [ART5_P1], FakeLLM("Voir [AI Act, art. 5 §1 bis]."))
+    assert answer.invalid_citations == ["[AI Act, art. 5 §1 bis]"]
+
+
+def test_refusal_mixed_with_an_answer_is_not_a_refusal() -> None:
+    reply = f"{REFUSAL} Sur le point X en revanche, il faut informer [AI Act, art. 50 §1]."
+    answer = answer_question("q", [ART50], FakeLLM(reply))
+    assert not answer.refused
+    assert answer.answer == reply
+
+
+def test_answer_without_valid_citation_is_not_grounded() -> None:
+    assert not answer_question("q", [ART50], FakeLLM("Il faut informer.")).grounded
+    assert not answer_question("q", [ART50], FakeLLM("Voir [AI Act, art. 9 §1].")).grounded
+    assert answer_question("q", [ART50], FakeLLM("Voir [AI Act, art. 50 §1].")).grounded
+
+
+def test_truncated_completion_is_flagged() -> None:
+    llm = FakeLLM("Un chatbot doit informer [AI Act, art. 50")
+    llm.truncated = True
+    assert answer_question("q", [ART50], llm).truncated

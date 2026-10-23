@@ -27,6 +27,9 @@ Règles impératives :
 Tu ne donnes pas de conseil juridique."""  # noqa: E501
 
 _CITATION = re.compile(r"\[(?:AI Act|RGPD|CNIL)[^\[\]]*\]")
+# Point cité sous un paragraphe (« §1 a », « §1, point b bis ») : il est dans le passage du §.
+_POINT_SUFFIX = re.compile(r",? (?:point )?\(?[a-z0-9]{1,3}\)?(?: (?:bis|ter|quater|quinquies))?")
+_INSERTED = ("bis", "ter", "quater", "quinquies", "sexies")
 
 
 @dataclass(frozen=True)
@@ -38,6 +41,15 @@ class Answer:
     invalid_citations: list[str] = field(default_factory=list)
     context_ids: list[str] = field(default_factory=list)
     completion: Completion | None = None
+
+    @property
+    def grounded(self) -> bool:
+        """Au moins une citation vérifiée, et aucune citation inventée."""
+        return not self.refused and bool(self.citations) and not self.invalid_citations
+
+    @property
+    def truncated(self) -> bool:
+        return self.completion is not None and self.completion.truncated
 
 
 def build_messages(question: str, passages: list[Passage]) -> list[Message]:
@@ -60,7 +72,7 @@ def answer_question(question: str, passages: list[Passage], llm: LLMClient) -> A
     cited: dict[str, Passage] = {}
     invalid: list[str] = []
     for label in _CITATION.findall(text):
-        passage = by_label.get(_normalize(label))
+        passage = _resolve(_normalize(label), by_label)
         if passage is None:
             invalid.append(label)
         else:
@@ -76,8 +88,30 @@ def answer_question(question: str, passages: list[Passage], llm: LLMClient) -> A
     )
 
 
+def _resolve(label: str, by_label: dict[str, Passage]) -> Passage | None:
+    """Passage cité, ou à défaut le paragraphe qui contient le point cité."""
+    if label in by_label:
+        return by_label[label]
+    cited = label.rstrip("]")
+    for known, passage in sorted(by_label.items(), key=lambda kv: -len(kv[0])):
+        parent = known.rstrip("]")
+        rest = cited[len(parent) :]
+        if (
+            cited.startswith(parent)
+            and _POINT_SUFFIX.fullmatch(rest)
+            and not rest.strip(" ,").startswith(_INSERTED)
+        ):
+            return passage
+    return None
+
+
 def _is_refusal(text: str) -> bool:
-    return _normalize(REFUSAL)[:60] in _normalize(text)
+    """La réponse n'est que la phrase de refus (éventuellement entre guillemets).
+
+    Une réponse qui contient la phrase puis répond quand même n'est pas un refus : la
+    remplacer par le refus ferait perdre son contenu.
+    """
+    return _normalize(text).rstrip(" .") == _normalize(REFUSAL).rstrip(" .")
 
 
 def _normalize(text: str) -> str:
