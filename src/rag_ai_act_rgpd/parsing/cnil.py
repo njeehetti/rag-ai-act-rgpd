@@ -4,12 +4,18 @@ Licence CC BY-ND 4.0 : le texte est conservé **verbatim**. On le découpe par s
 sans le réécrire, et chaque passage garde l'URL source et la date de la page.
 
 Gabarit des pages : un titre ``h1`` suivi de sa date et d'un chapô, puis des blocs
-dépliables (``div.ctn-gen-ascenseur``) titrés en ``h2``, découpés en sous-sections ``h3``.
-Un passage = une sous-section ``h3`` (ou une section ``h2`` sans sous-section).
+dépliables (``div.ctn-gen-ascenseur``) titrés en ``h2``, découpés en ``h3`` puis ``h4``.
+Un passage = le texte sous le titre le plus fin (``h2``, ``h3`` ou ``h4``).
+
+L'identifiant enchaîne les titres parents (``cnil:{page}:{h2}:{h3}``) : il ne dépend pas du
+rang d'une section homonyme (« Le principe », « En pratique »), donc l'ajout d'une section
+ailleurs dans la page ne le décale pas. Le jeu d'évaluation s'appuie dessus.
 """
 
+import hashlib
 import re
 import unicodedata
+from collections import Counter
 from typing import cast
 
 from lxml import html
@@ -22,7 +28,8 @@ DOCUMENT_ID = "cnil"
 _END_MARKERS = ("Ceci peut également vous intéresser", "Textes de référence", "Pour approfondir")
 _NOISE = re.compile(r"\s*(Déplier|Replier)\s*$")
 _TEXT_TAGS = {"p", "li", "td", "th", "blockquote", "dt", "dd"}
-_HEADINGS = {"h2", "h3"}
+_LEVELS = {"h2": 0, "h3": 1, "h4": 2}
+_SLUG_WORDS = 8
 _DATE = re.compile(r"\d{1,2}(?:er)? \w+ \d{4}")
 _DATE_CLASS = "ctn-gen-auteur"
 
@@ -40,36 +47,37 @@ def parse_cnil(content: bytes, url: str) -> list[Passage]:
         raise ValueError(f"contenu introuvable : {url}")
     date = _page_date(content_root)
 
-    sections: list[tuple[str | None, str | None, list[str]]] = [(None, None, [])]
-    h2: str | None = None
+    # Chaque section : (titres h2/h3/h4 en cours, lignes de texte).
+    sections: list[tuple[tuple[str, ...], list[str]]] = [((), [])]
+    path: list[str] = []
     for el in _blocks(content_root):
         text = _clean(el.text_content())
         if not text:
             continue
-        if el.tag in _HEADINGS:
+        if el.tag in _LEVELS:
             if text.startswith(_END_MARKERS):
                 break
-            if el.tag == "h2":
-                h2 = text
-                sections.append((h2, None, []))
-            else:
-                sections.append((h2, text, []))
+            path = [*path[: _LEVELS[el.tag]], text]
+            sections.append((tuple(path), []))
             continue
-        if el.tag.startswith("h"):  # h4 et au-delà : intertitre gardé dans le texte
+        if el.tag.startswith("h"):  # h5 et au-delà : intertitre gardé dans le texte
             text = f"{text} :"
-        sections[-1][2].append(text)
+        sections[-1][1].append(text)
 
+    kept = [(_dedupe(titles), lines) for titles, lines in sections if lines]
+    homonyms = Counter(titles[-1] for titles, _ in kept if titles)
     passages: list[Passage] = []
     seen: dict[str, int] = {}
-    for h2_title, h3_title, lines in sections:
-        if not lines:
-            continue
-        heading = h3_title or h2_title
-        slug = _slug(heading) if heading else "introduction"
+    for titles, lines in kept:
+        slug = ":".join(_slug(t) for t in titles) or "introduction"
         seen[slug] = seen.get(slug, 0) + 1
-        if seen[slug] > 1:
+        if seen[slug] > 1:  # dernier recours : titres identiques à tous les niveaux
             slug = f"{slug}-{seen[slug]}"
-        label_heading = f", « {heading} »" if heading else ""
+        heading = titles[-1] if titles else None
+        if heading and homonyms[heading] > 1 and len(titles) > 1:
+            label_heading = f", « {titles[-2]} », « {heading} »"
+        else:
+            label_heading = f", « {heading} »" if heading else ""
         passages.append(
             Passage(
                 id=f"{DOCUMENT_ID}:{page_slug}:{slug}",
@@ -80,12 +88,17 @@ def parse_cnil(content: bytes, url: str) -> list[Passage]:
                 url=url,
                 position=len(passages),
                 chapter=title,
-                section=h2_title,
+                section=titles[0] if titles else None,
                 heading=heading,
                 version_date=date,
             )
         )
     return passages
+
+
+def _dedupe(titles: tuple[str, ...]) -> tuple[str, ...]:
+    """Retire un titre répété au niveau inférieur (``h3`` identique à son ``h2``)."""
+    return tuple(t for i, t in enumerate(titles) if i == 0 or t != titles[i - 1])
 
 
 def _blocks(root: HtmlElement) -> list[HtmlElement]:
@@ -130,4 +143,8 @@ def _slug(text: str) -> str:
         unicodedata.normalize("NFKD", re.sub(r"[’']", " ", text)).encode("ascii", "ignore").decode()
     )
     words = re.findall(r"[a-z0-9]+", ascii_text.lower())
-    return "-".join(words[:12])
+    if len(words) <= _SLUG_WORDS:
+        return "-".join(words)
+    # Titre tronqué : l'empreinte du titre complet distingue deux titres au même début.
+    digest = hashlib.sha1(" ".join(words).encode()).hexdigest()[:4]
+    return "-".join([*words[:_SLUG_WORDS], digest])

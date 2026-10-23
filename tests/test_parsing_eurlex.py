@@ -131,3 +131,14 @@ def test_ids_unique_texts_non_empty_and_parsing_deterministic(
     }[name]
     again = parse_eurlex((FIXTURES / fixture).read_bytes(), spec)
     assert [p.id for p in again] == list(passages)  # ids uniques (clés du dict) et stables
+
+
+def test_textual_superscripts_are_kept(aiact: dict[str, Passage]) -> None:
+    # « n<sup>o</sup> » : l'exposant fait partie du texte, contrairement aux renvois de notes.
+    assert "règlement (UE) n° 1025/2012" in aiact["aiact:art3:pt27"].text
+
+
+def test_footnote_references_leave_no_trace(rgpd: dict[str, Passage]) -> None:
+    text = rgpd["rgpd:art4:pt25"].text
+    assert "()" not in text
+    assert text.endswith("du Parlement européen et du Conseil ;")

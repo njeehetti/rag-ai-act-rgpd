@@ -41,6 +41,9 @@ _PARAGRAPH_NUMBER = re.compile(r"^(\d+)(?:\s*(bis|ter|quater|quinquies|sexies|se
 _LEADING_NUMBER = re.compile(r"^\(?\d{1,3}[\.\)]\s+")
 _AMENDMENT_CELEX = re.compile(r"celex/(\w+)$")
 _MARKER_CHARS = re.compile(r"[▼►◄▲]\w*")
+_SUPERSCRIPTS = {"superscript", "oj-super"}
+_NOTE_REF = re.compile(r"\(?\s*\d+\s*\)?")
+_EMPTY_PARENS = re.compile(r"\s*\(\s*\)")
 _SKIPPED_CLASSES = {
     "modref",
     "arrow",
@@ -395,7 +398,8 @@ def _lines(el: HtmlElement) -> list[str]:
     """Texte d'un élément, une ligne par bloc, marqueurs de liste recollés à leur texte."""
     chunks: list[str] = []
     _collect(el, chunks)
-    lines = [" ".join(_MARKER_CHARS.sub("", line).split()) for line in "".join(chunks).split("\n")]
+    text = _EMPTY_PARENS.sub("", "".join(chunks))  # parenthèses d'un renvoi de note retiré
+    lines = [" ".join(_MARKER_CHARS.sub("", line).split()) for line in text.split("\n")]
     lines = [line for line in lines if line]
     merged: list[str] = []
     for line in lines:
@@ -407,7 +411,18 @@ def _lines(el: HtmlElement) -> list[str]:
 
 
 def _collect(el: HtmlElement, out: list[str]) -> None:
-    if set((el.get("class") or "").split()) & _SKIPPED_CLASSES:
+    classes = set((el.get("class") or "").split())
+    content = el.text_content().strip()
+    if el.tag == "a" and (el.get("href") or "").startswith("#") and _NOTE_REF.fullmatch(content):
+        if el.tail:  # renvoi de note « (1) » : supprimé, la note n'est pas dans le passage
+            out.append(el.tail)
+        return
+    if classes & _SUPERSCRIPTS and content.isalpha():  # « n<sup>o</sup> », « 1<sup>er</sup> »
+        out.append("°" if content == "o" else content)
+        if el.tail:
+            out.append(el.tail)
+        return
+    if classes & _SKIPPED_CLASSES:
         if el.tail:
             out.append(el.tail)
         return
