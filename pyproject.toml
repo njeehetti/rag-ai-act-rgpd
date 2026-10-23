@@ -49,3 +49,6 @@ files = ["src", "tests"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
+
+[project.scripts]
+rag = "rag_ai_act_rgpd.cli:main"

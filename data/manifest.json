@@ -1,0 +1,234 @@
+{
+  "02024R1689-20260727": {
+    "bytes": 924085,
+    "fetched_at": "2026-10-23T07:31:20+00:00",
+    "file": "eurlex/02024R1689-20260727.html",
+    "resolved_url": "http://publications.europa.eu/resource/cellar/b1730fb2-8f1c-11f1-9262-01aa75ed71a1.0011.02/DOC_1",
+    "sha256": "248c47ff5dd6583d98711347541047e7a2b83d5122174312558a8a17d90b81f8",
+    "url": "http://publications.europa.eu/resource/celex/02024R1689-20260727"
+  },
+  "32016R0679": {
+    "bytes": 876858,
+    "fetched_at": "2026-10-23T07:31:34+00:00",
+    "file": "eurlex/32016R0679.html",
+    "resolved_url": "http://publications.europa.eu/resource/cellar/3e485e15-11bd-11e6-ba9a-01aa75ed71a1.0009.03/DOC_1",
+    "sha256": "27a2248cf0cf7c79a3ec7eae30b6e871817230d9f577632fed915181642144c2",
+    "url": "http://publications.europa.eu/resource/celex/32016R0679"
+  },
+  "32024R1689": {
+    "bytes": 1383324,
+    "fetched_at": "2026-10-23T07:31:29+00:00",
+    "file": "eurlex/32024R1689.html",
+    "resolved_url": "http://publications.europa.eu/resource/cellar/dc8116a1-3fe6-11ef-865a-01aa75ed71a1.0009.03/DOC_1",
+    "sha256": "d8b1a7775f597dc8d49a2bdc91af0dca3bc12ac558b97504685f9534660bb44e",
+    "url": "http://publications.europa.eu/resource/celex/32024R1689"
+  },
+  "assurer-que-le-traitement-est-licite": {
+    "bytes": 138051,
+    "fetched_at": "2026-10-23T07:32:06+00:00",
+    "file": "cnil/assurer-que-le-traitement-est-licite.html",
+    "resolved_url": "https://www.cnil.fr/fr/assurer-que-le-traitement-est-licite",
+    "sha256": "7e9d015a95cf9207d5eb26fb955dc1daf8d95a401a05e7d5b63e809ed059db36",
+    "url": "https://www.cnil.fr/fr/assurer-que-le-traitement-est-licite"
+  },
+  "assurer-que-le-traitement-est-licite-reutilisation-des-donnees": {
+    "bytes": 145535,
+    "fetched_at": "2026-10-23T07:32:10+00:00",
+    "file": "cnil/assurer-que-le-traitement-est-licite-reutilisation-des-donnees.html",
+    "resolved_url": "https://www.cnil.fr/fr/assurer-que-le-traitement-est-licite-reutilisation-des-donnees",
+    "sha256": "33d02e8d008c6db54c17d6c6438a0d42cea8b48030c2a733ecc77c44016762c2",
+    "url": "https://www.cnil.fr/fr/assurer-que-le-traitement-est-licite-reutilisation-des-donnees"
+  },
+  "base-legale-interet-legitime-developpement-systeme": {
+    "bytes": 179354,
+    "fetched_at": "2026-10-23T07:32:29+00:00",
+    "file": "cnil/base-legale-interet-legitime-developpement-systeme.html",
+    "resolved_url": "https://www.cnil.fr/fr/base-legale-interet-legitime-developpement-systeme",
+    "sha256": "c620a718290e867def139e479df28b07b38dd7f2fc4d4440d3b6af100ab1f8a2",
+    "url": "https://www.cnil.fr/fr/base-legale-interet-legitime-developpement-systeme"
+  },
+  "ce-quil-faut-savoir-sur-lanalyse-dimpact-relative-la-protection-des-donnees-aipd": {
+    "bytes": 140407,
+    "fetched_at": "2026-10-23T07:37:02+00:00",
+    "file": "cnil/ce-quil-faut-savoir-sur-lanalyse-dimpact-relative-la-protection-des-donnees-aipd.html",
+    "resolved_url": "https://www.cnil.fr/fr/ce-quil-faut-savoir-sur-lanalyse-dimpact-relative-la-protection-des-donnees-aipd",
+    "sha256": "d59a83e8d7c67e53c7e48f0145889c6611398351f88d1d549fd565e5fdf832db",
+    "url": "https://www.cnil.fr/fr/ce-quil-faut-savoir-sur-lanalyse-dimpact-relative-la-protection-des-donnees-aipd"
+  },
+  "definir-une-finalite-0": {
+    "bytes": 137108,
+    "fetched_at": "2026-10-23T07:31:50+00:00",
+    "file": "cnil/definir-une-finalite-0.html",
+    "resolved_url": "https://www.cnil.fr/fr/definir-une-finalite-0",
+    "sha256": "43358938e12dba521dac500a60f407dd15cc2280c04ee44c6b829d7c3ebec90b",
+    "url": "https://www.cnil.fr/fr/definir-une-finalite-0"
+  },
+  "determiner-la-qualification-juridique-des-fournisseurs-de-systemes-dia": {
+    "bytes": 118187,
+    "fetched_at": "2026-10-23T07:31:57+00:00",
+    "file": "cnil/determiner-la-qualification-juridique-des-fournisseurs-de-systemes-dia.html",
+    "resolved_url": "https://www.cnil.fr/fr/determiner-la-qualification-juridique-des-fournisseurs-de-systemes-dia",
+    "sha256": "50267f5c5821f9a14fcaf9b261d8591901a509f9815f2dee044e673606f15348",
+    "url": "https://www.cnil.fr/fr/determiner-la-qualification-juridique-des-fournisseurs-de-systemes-dia"
+  },
+  "determiner-le-regime-juridique-applicable": {
+    "bytes": 105059,
+    "fetched_at": "2026-10-23T07:31:44+00:00",
+    "file": "cnil/determiner-le-regime-juridique-applicable.html",
+    "resolved_url": "https://www.cnil.fr/fr/determiner-le-regime-juridique-applicable",
+    "sha256": "f4621bb3ad780e359c4422ec74429e582a70273c54a22f7ebd04e302ef27cd9a",
+    "url": "https://www.cnil.fr/fr/determiner-le-regime-juridique-applicable"
+  },
+  "developpement-des-systemes-dia-les-recommandations-de-la-cnil-pour-respecter-le-rgpd": {
+    "bytes": 202795,
+    "fetched_at": "2026-10-23T07:31:36+00:00",
+    "file": "cnil/developpement-des-systemes-dia-les-recommandations-de-la-cnil-pour-respecter-le-rgpd.html",
+    "resolved_url": "https://www.cnil.fr/fr/developpement-des-systemes-dia-les-recommandations-de-la-cnil-pour-respecter-le-rgpd",
+    "sha256": "019fa2d6547a9353f2a6d31d2be0cf89c0f1dc697e7e5815b5c199d9b5550c9c",
+    "url": "https://www.cnil.fr/fr/developpement-des-systemes-dia-les-recommandations-de-la-cnil-pour-respecter-le-rgpd"
+  },
+  "focus-interet-legitime-collecte-par-moissonnage": {
+    "bytes": 128365,
+    "fetched_at": "2026-10-23T07:32:30+00:00",
+    "file": "cnil/focus-interet-legitime-collecte-par-moissonnage.html",
+    "resolved_url": "https://www.cnil.fr/fr/focus-interet-legitime-collecte-par-moissonnage",
+    "sha256": "b66b425fe7b5dcbee46be1cf2811f45b15213ad83021873a8352236a779af719",
+    "url": "https://www.cnil.fr/fr/focus-interet-legitime-collecte-par-moissonnage"
+  },
+  "ia-analyser-le-statut-dun-modele-dia-au-regard-du-rgpd": {
+    "bytes": 164089,
+    "fetched_at": "2026-10-23T07:32:50+00:00",
+    "file": "cnil/ia-analyser-le-statut-dun-modele-dia-au-regard-du-rgpd.html",
+    "resolved_url": "https://www.cnil.fr/fr/ia-analyser-le-statut-dun-modele-dia-au-regard-du-rgpd",
+    "sha256": "55fba4d8dcf5b1f69ad2730b196d83a2ffde167ddddac616d17eacc7043fb0ea",
+    "url": "https://www.cnil.fr/fr/ia-analyser-le-statut-dun-modele-dia-au-regard-du-rgpd"
+  },
+  "ia-annoter-les-donnees": {
+    "bytes": 150648,
+    "fetched_at": "2026-10-23T07:32:37+00:00",
+    "file": "cnil/ia-annoter-les-donnees.html",
+    "resolved_url": "https://www.cnil.fr/fr/ia-annoter-les-donnees",
+    "sha256": "87512a7e091af75bfd062d9654183880fe29a936ef1ca0d9e208541e4cfbacd1",
+    "url": "https://www.cnil.fr/fr/ia-annoter-les-donnees"
+  },
+  "ia-garantir-la-securite-du-developpement": {
+    "bytes": 151616,
+    "fetched_at": "2026-10-23T07:32:44+00:00",
+    "file": "cnil/ia-garantir-la-securite-du-developpement.html",
+    "resolved_url": "https://www.cnil.fr/fr/ia-garantir-la-securite-du-developpement",
+    "sha256": "7adb9ac688b8e5744a4fe23edbf0cab601da11ee04b9f387cf4136536437a5e1",
+    "url": "https://www.cnil.fr/fr/ia-garantir-la-securite-du-developpement"
+  },
+  "ia-informer-les-personnes-concernees": {
+    "bytes": 144856,
+    "fetched_at": "2026-10-23T07:32:32+00:00",
+    "file": "cnil/ia-informer-les-personnes-concernees.html",
+    "resolved_url": "https://www.cnil.fr/fr/ia-informer-les-personnes-concernees",
+    "sha256": "70e0bf3e3becc51375229d69c263cef6a166a0c69f1418470f384414357bb312",
+    "url": "https://www.cnil.fr/fr/ia-informer-les-personnes-concernees"
+  },
+  "ia-respecter-lexercice-des-droits-des-personnes": {
+    "bytes": 154050,
+    "fetched_at": "2026-10-23T07:32:35+00:00",
+    "file": "cnil/ia-respecter-lexercice-des-droits-des-personnes.html",
+    "resolved_url": "https://www.cnil.fr/fr/ia-respecter-lexercice-des-droits-des-personnes",
+    "sha256": "ce94723b45571fd3f5fa865a007b44bfff25b63dad818549775ebf9d31957aab",
+    "url": "https://www.cnil.fr/fr/ia-respecter-lexercice-des-droits-des-personnes"
+  },
+  "les-bases-legales--choisir-base-legale": {
+    "bytes": 120772,
+    "fetched_at": "2026-10-23T07:33:03+00:00",
+    "file": "cnil/les-bases-legales--choisir-base-legale.html",
+    "resolved_url": "https://www.cnil.fr/fr/les-bases-legales/choisir-base-legale",
+    "sha256": "e3b7c51f006309398ec66eef787bf5e519c3bf9ed60a4122e8151b640dde85b3",
+    "url": "https://www.cnil.fr/fr/les-bases-legales/choisir-base-legale"
+  },
+  "les-bases-legales--consentement": {
+    "bytes": 111750,
+    "fetched_at": "2026-10-23T07:32:53+00:00",
+    "file": "cnil/les-bases-legales--consentement.html",
+    "resolved_url": "https://www.cnil.fr/fr/les-bases-legales/consentement",
+    "sha256": "f71c6d80cd75c7c09f832b6daef0db6b1c6d77c944d02c37436cceacfeb67b53",
+    "url": "https://www.cnil.fr/fr/les-bases-legales/consentement"
+  },
+  "les-bases-legales--contrat": {
+    "bytes": 121634,
+    "fetched_at": "2026-10-23T07:32:55+00:00",
+    "file": "cnil/les-bases-legales--contrat.html",
+    "resolved_url": "https://www.cnil.fr/fr/les-bases-legales/contrat",
+    "sha256": "88d5068b300467b468e4fc89897e186522ae59cd63d45d5264f634507892882d",
+    "url": "https://www.cnil.fr/fr/les-bases-legales/contrat"
+  },
+  "les-bases-legales--interet-legitime": {
+    "bytes": 128391,
+    "fetched_at": "2026-10-23T07:33:02+00:00",
+    "file": "cnil/les-bases-legales--interet-legitime.html",
+    "resolved_url": "https://www.cnil.fr/fr/les-bases-legales/interet-legitime",
+    "sha256": "3e8b3bfe6a4bc7bfdecc01d064b4adc5701b8e1b4710803b878334e26a9748ef",
+    "url": "https://www.cnil.fr/fr/les-bases-legales/interet-legitime"
+  },
+  "les-bases-legales--liceite-essentiel-sur-les-bases-legales": {
+    "bytes": 108064,
+    "fetched_at": "2026-10-23T07:32:52+00:00",
+    "file": "cnil/les-bases-legales--liceite-essentiel-sur-les-bases-legales.html",
+    "resolved_url": "https://www.cnil.fr/fr/les-bases-legales/liceite-essentiel-sur-les-bases-legales",
+    "sha256": "bac774aa8d10ca0c7193e38a59187c69f680f7e0dc8db068cb72dd31b982ee32",
+    "url": "https://www.cnil.fr/fr/les-bases-legales/liceite-essentiel-sur-les-bases-legales"
+  },
+  "les-bases-legales--mission-interet-public": {
+    "bytes": 91832,
+    "fetched_at": "2026-10-23T07:33:00+00:00",
+    "file": "cnil/les-bases-legales--mission-interet-public.html",
+    "resolved_url": "https://www.cnil.fr/fr/les-bases-legales/mission-interet-public",
+    "sha256": "a87180e59317ab811bad61e738e56b9893bb1e001027df18c690855d3e120f1b",
+    "url": "https://www.cnil.fr/fr/les-bases-legales/mission-interet-public"
+  },
+  "les-bases-legales--obligation-legale": {
+    "bytes": 100114,
+    "fetched_at": "2026-10-23T07:32:58+00:00",
+    "file": "cnil/les-bases-legales--obligation-legale.html",
+    "resolved_url": "https://www.cnil.fr/fr/les-bases-legales/obligation-legale",
+    "sha256": "cf74f398b751db100e67168586c6ab1504662a475097ecc14abaf3669bc351cb",
+    "url": "https://www.cnil.fr/fr/les-bases-legales/obligation-legale"
+  },
+  "listes-des-traitements-pour-lesquels-une-aipd-est-requise-ou-non": {
+    "bytes": 95343,
+    "fetched_at": "2026-10-23T07:37:05+00:00",
+    "file": "cnil/listes-des-traitements-pour-lesquels-une-aipd-est-requise-ou-non.html",
+    "resolved_url": "https://www.cnil.fr/fr/listes-des-traitements-pour-lesquels-une-aipd-est-requise-ou-non",
+    "sha256": "35fe1d6ae479bd46810d7653be2f5c14a4db162c1dffd1bfb7c10969818dce4f",
+    "url": "https://www.cnil.fr/fr/listes-des-traitements-pour-lesquels-une-aipd-est-requise-ou-non"
+  },
+  "quel-est-le-perimetre-des-fiches-pratiques-sur-lia": {
+    "bytes": 134538,
+    "fetched_at": "2026-10-23T07:31:38+00:00",
+    "file": "cnil/quel-est-le-perimetre-des-fiches-pratiques-sur-lia.html",
+    "resolved_url": "https://www.cnil.fr/fr/quel-est-le-perimetre-des-fiches-pratiques-sur-lia",
+    "sha256": "9f7706111985826ebf7777c7d08b714a1f1e2629dc4aecbc5f488e16f38ff1ac",
+    "url": "https://www.cnil.fr/fr/quel-est-le-perimetre-des-fiches-pratiques-sur-lia"
+  },
+  "realiser-une-analyse-dimpact-si-necessaire": {
+    "bytes": 143000,
+    "fetched_at": "2026-10-23T07:32:13+00:00",
+    "file": "cnil/realiser-une-analyse-dimpact-si-necessaire.html",
+    "resolved_url": "https://www.cnil.fr/fr/realiser-une-analyse-dimpact-si-necessaire",
+    "sha256": "eb42309325e8d1f87482fa8482013dd0557c0868155338cacd0353cd27bf0239",
+    "url": "https://www.cnil.fr/fr/realiser-une-analyse-dimpact-si-necessaire"
+  },
+  "tenir-compte-de-la-protection-des-donnees-dans-la-collecte-et-la-gestion-des-donnees": {
+    "bytes": 158934,
+    "fetched_at": "2026-10-23T07:32:26+00:00",
+    "file": "cnil/tenir-compte-de-la-protection-des-donnees-dans-la-collecte-et-la-gestion-des-donnees.html",
+    "resolved_url": "https://www.cnil.fr/fr/tenir-compte-de-la-protection-des-donnees-dans-la-collecte-et-la-gestion-des-donnees",
+    "sha256": "08f18e4351216388b9be5f496fc0d5eb8dbe7e5242ed621acfb6918850bffa49",
+    "url": "https://www.cnil.fr/fr/tenir-compte-de-la-protection-des-donnees-dans-la-collecte-et-la-gestion-des-donnees"
+  },
+  "tenir-compte-de-la-protection-des-donnees-dans-la-conception-du-systeme": {
+    "bytes": 135259,
+    "fetched_at": "2026-10-23T07:32:19+00:00",
+    "file": "cnil/tenir-compte-de-la-protection-des-donnees-dans-la-conception-du-systeme.html",
+    "resolved_url": "https://www.cnil.fr/fr/tenir-compte-de-la-protection-des-donnees-dans-la-conception-du-systeme",
+    "sha256": "d3d48047e3168089c5002ec8d2c286493b67b430b7ebbb0e03ee4a1dfb265de5",
+    "url": "https://www.cnil.fr/fr/tenir-compte-de-la-protection-des-donnees-dans-la-conception-du-systeme"
+  }
+}
