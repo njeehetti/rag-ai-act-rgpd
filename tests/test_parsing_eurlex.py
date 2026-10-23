@@ -9,9 +9,9 @@ from rag_ai_act_rgpd.parsing.eurlex import (
     AIACT_CONSOLIDATED,
     AIACT_RECITALS,
     RGPD,
-    Passage,
     parse_eurlex,
 )
+from rag_ai_act_rgpd.parsing.models import Passage
 
 FIXTURES = Path(__file__).parent / "fixtures"
 

@@ -12,14 +12,12 @@ de la numérotation juridique, jamais des ids HTML aléatoires de la version con
 """
 
 import re
-from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Literal
 
 from lxml import html
 from lxml.html import HtmlElement
 
-Kind = Literal["paragraph", "point", "article", "recital", "annex_point", "annex"]
+from rag_ai_act_rgpd.parsing.models import Kind, Passage
 
 EURLEX_URL = "https://eur-lex.europa.eu/legal-content/FR/TXT/HTML/?uri=CELEX:{celex}"
 
@@ -86,26 +84,6 @@ AIACT_RECITALS = DocumentSpec(
 RGPD = DocumentSpec(
     id="rgpd", label="RGPD", celex="32016R0679", kinds=frozenset({"article", "recital"})
 )
-
-
-@dataclass(frozen=True)
-class Passage:
-    """Plus petite unité citable du corpus."""
-
-    id: str
-    document_id: str
-    kind: Kind
-    citation_label: str
-    text: str
-    url: str
-    position: int
-    chapter: str | None = None
-    section: str | None = None
-    article: str | None = None
-    paragraph: str | None = None
-    point: str | None = None
-    heading: str | None = None
-    amended_by: tuple[str, ...] = field(default_factory=tuple)
 
 
 @dataclass
@@ -444,12 +422,3 @@ def _collect(el: HtmlElement, out: list[str]) -> None:
         out.append("\n")
     if el.tail:
         out.append(el.tail)
-
-
-def iter_passages(*parsed: list[Passage]) -> Iterator[Passage]:
-    """Concatène plusieurs parsings en renumérotant les positions globalement."""
-    position = 0
-    for passages in parsed:
-        for p in passages:
-            yield Passage(**{**p.__dict__, "position": position})
-            position += 1
