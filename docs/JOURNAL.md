@@ -23,6 +23,8 @@
 - Identifiants ghcr.io périmés en local, d'où l'installation d'uv par pip dans l'image (D6).
 - Starlette déprécie `httpx` pour `TestClient`, remplacé par `httpx2`.
 
+- Dépôt public https://github.com/njeehetti/rag-ai-act-rgpd, CI verte, issues de roadmap #1 à #5.
+- `setup-uv` ne publie plus de tag majeur flottant : version figée à `v10.3.2`.
+
 **Reste à faire**
-- CI verte sur GitHub, issues de roadmap.
 - Phase 1 : plan d'ingestion et de parsing à valider.
