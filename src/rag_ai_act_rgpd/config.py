@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     chunk_strategy: Literal["fixed", "structural"] = "structural"
     top_k_chunks: int = 10
     max_passages: int = 8
+    # ~3 500 tokens d'extraits : avec le prompt et la réponse, tient dans llm_num_ctx.
+    max_context_chars: int = 12_000
 
     # Génération (LLM local via Ollama)
     llm_model: str = "qwen3:8b"

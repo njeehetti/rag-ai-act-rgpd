@@ -12,10 +12,10 @@ from rag_ai_act_rgpd.rag import Rag
 @lru_cache
 def build_rag() -> Rag:
     s = get_settings()
-    conn = db.connect(s.database_url)
-    db.migrate(conn)
+    with db.connect(s.database_url) as conn:
+        db.migrate(conn)
     return Rag(
-        conn=conn,
+        pool=db.pool(s.database_url),
         embedder=SentenceTransformerEmbedder(s.embedding_model),
         llm=OllamaClient(
             s.llm_model,
@@ -27,4 +27,5 @@ def build_rag() -> Rag:
         strategy=s.chunk_strategy,
         top_k_chunks=s.top_k_chunks,
         max_passages=s.max_passages,
+        max_context_chars=s.max_context_chars,
     )

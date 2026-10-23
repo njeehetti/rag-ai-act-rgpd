@@ -11,6 +11,7 @@ import pytest
 from rag_ai_act_rgpd import db
 from rag_ai_act_rgpd.chunking import Chunk
 from rag_ai_act_rgpd.parsing.models import Passage
+from rag_ai_act_rgpd.rag import index_corpus
 
 ADMIN_URL = os.environ.get("TEST_DATABASE_URL", "postgresql://rag:rag@localhost:5432/rag")
 
@@ -62,12 +63,11 @@ def test_round_trip_and_vector_search(conn: psycopg.Connection) -> None:
     ]
     db.replace_chunks(conn, "structural", chunks)
 
-    missing = db.texts_without_embedding(conn, "m", "structural")
-    assert len(missing) == 3
+    assert db.cached_digests(conn, "m") == set()
     vectors = {"chunk A": [1.0, 0.0], "chunk B": [0.0, 1.0], "chunk C": [0.7, 0.7]}
-    db.store_embeddings(conn, "m", [(h, np.array(vectors[t])) for h, t in missing])
-    assert db.texts_without_embedding(conn, "m", "structural") == []
-    assert len(db.texts_without_embedding(conn, "autre-modele", "structural")) == 3
+    db.store_embeddings(conn, "m", [(db.sha256(t), np.array(v)) for t, v in vectors.items()])
+    assert db.cached_digests(conn, "m") == {db.sha256(t) for t in vectors}
+    assert db.cached_digests(conn, "autre-modele") == set()
 
     hits = db.search(conn, np.array([1.0, 0.1]), "m", "structural", k=2)
     assert [h.chunk_id for h in hits] == ["structural:0", "structural:2"]
@@ -78,12 +78,33 @@ def test_round_trip_and_vector_search(conn: psycopg.Connection) -> None:
     assert stored["aiact:art50:p1"] == passage("aiact:art50:p1")
 
 
-def test_replace_chunks_keeps_embedding_cache(conn: psycopg.Connection) -> None:
+class FakeEmbedder:
+    name = "fake"
+
+    def __init__(self) -> None:
+        self.encoded: list[str] = []
+
+    def embed_documents(self, texts: list[str]) -> np.ndarray:
+        self.encoded += texts
+        return np.array([[1.0, float(len(t))] for t in texts])
+
+    def embed_query(self, text: str) -> np.ndarray:
+        return np.array([1.0, 0.0])
+
+
+def test_reindexing_only_encodes_new_texts(conn: psycopg.Connection) -> None:
     db.migrate(conn)
-    db.replace_passages(conn, [passage("aiact:art50:p1")])
-    chunk = Chunk("fixed:0", "fixed", "même texte", ("aiact:art50:p1",), 0)
-    db.replace_chunks(conn, "fixed", [chunk])
-    [(digest, _)] = db.texts_without_embedding(conn, "m", "fixed")
-    db.store_embeddings(conn, "m", [(digest, np.array([1.0, 0.0]))])
-    db.replace_chunks(conn, "fixed", [chunk])  # réindexation : rien à réencoder
-    assert db.texts_without_embedding(conn, "m", "fixed") == []
+    passages = [passage("aiact:art50:p1"), passage("aiact:art50:p2")]
+    embedder = FakeEmbedder()
+    stats = index_corpus(conn, passages, embedder, strategies=("structural",))
+    assert stats["structural_newly_embedded"] == len(embedder.encoded) > 0
+    again = index_corpus(conn, passages, FakeEmbedder(), strategies=("structural",))
+    assert again["structural_newly_embedded"] == 0
+
+
+def test_sql_error_does_not_poison_the_connection(conn: psycopg.Connection) -> None:
+    # Avant : autocommit=False, une erreur laissait la connexion en transaction échouée.
+    db.migrate(conn)
+    with pytest.raises(psycopg.errors.UndefinedTable):
+        conn.execute("SELECT * FROM table_absente")
+    assert conn.execute("SELECT 1").fetchone() == (1,)
