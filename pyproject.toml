@@ -15,6 +15,8 @@ dependencies = [
     "pgvector>=0.5.1",
     "psycopg[binary,pool]>=3.3.6",
     "pydantic-settings>=2.16.1",
+    "sentence-transformers>=6.2.0",
+    "torch>=2.14.1",
     "uvicorn[standard]>=0.54.0",
 ]
 
@@ -46,9 +48,32 @@ python_version = "3.12"
 strict = true
 files = ["src", "tests"]
 
+# Ne pas analyser ces bibliothèques massives : leurs types sont traités comme Any.
+[[tool.mypy.overrides]]
+module = ["torch.*", "sentence_transformers.*", "transformers.*"]
+follow_imports = "skip"
+follow_imports_for_stubs = true
+
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 addopts = "-ra"
 
 [project.scripts]
 rag = "rag_ai_act_rgpd.cli:main"
+
+# PyTorch : CUDA 13.0 sur le poste de dev (RTX 4070, Windows), CPU dans Docker/CI (Linux).
+[tool.uv.sources]
+torch = [
+    { index = "pytorch-cu130", marker = "sys_platform == 'win32'" },
+    { index = "pytorch-cpu", marker = "sys_platform == 'linux'" },
+]
+
+[[tool.uv.index]]
+name = "pytorch-cu130"
+url = "https://download.pytorch.org/whl/cu130"
+explicit = true
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
