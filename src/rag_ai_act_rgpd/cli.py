@@ -2,6 +2,7 @@
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from rag_ai_act_rgpd.fetch import fetch_all, verify
@@ -13,6 +14,9 @@ MANIFEST = DATA_DIR / "manifest.json"
 
 
 def main(argv: list[str] | None = None) -> None:
+    # La console Windows est en cp1252 par défaut : sans ça, les accents s'affichent mal.
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8")
     parser = argparse.ArgumentParser(prog="rag")
     commands = parser.add_subparsers(dest="command", required=True)
 

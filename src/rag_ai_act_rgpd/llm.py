@@ -39,11 +39,24 @@ class OllamaClient:
         base_url: str = "http://localhost:11434",
         temperature: float = 0.0,
         max_tokens: int = 1024,
+        num_ctx: int = 8192,
         timeout_s: float = 180.0,
     ) -> None:
         self.model = model
-        self._options = {"temperature": temperature, "num_predict": max_tokens, "seed": 0}
+        self._options = {
+            "temperature": temperature,
+            "num_predict": max_tokens,
+            "num_ctx": num_ctx,
+            "seed": 0,
+        }
         self._client = httpx.Client(base_url=base_url, timeout=timeout_s)
+
+    def warm_up(self) -> None:
+        """Charge le modèle en mémoire GPU sans rien générer (évite ~10 s au 1er appel)."""
+        self._client.post(
+            "/api/generate",
+            json={"model": self.model, "options": {"num_ctx": self._options["num_ctx"]}},
+        ).raise_for_status()
 
     def complete(self, messages: list[Message]) -> Completion:
         start = time.perf_counter()

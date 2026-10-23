@@ -22,6 +22,8 @@ class Settings(BaseSettings):
     ollama_url: str = "http://localhost:11434"
     llm_temperature: float = 0.0
     llm_max_tokens: int = 1024
+    # 8k suffit (prompts ~3k tokens) et garde qwen3:8b à 100 % sur une carte de 8 Go.
+    llm_num_ctx: int = 8192
 
 
 @lru_cache

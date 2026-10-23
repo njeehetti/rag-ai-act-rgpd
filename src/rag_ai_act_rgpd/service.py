@@ -18,7 +18,11 @@ def build_rag() -> Rag:
         conn=conn,
         embedder=SentenceTransformerEmbedder(s.embedding_model),
         llm=OllamaClient(
-            s.llm_model, s.ollama_url, temperature=s.llm_temperature, max_tokens=s.llm_max_tokens
+            s.llm_model,
+            s.ollama_url,
+            temperature=s.llm_temperature,
+            max_tokens=s.llm_max_tokens,
+            num_ctx=s.llm_num_ctx,
         ),
         strategy=s.chunk_strategy,
         top_k_chunks=s.top_k_chunks,

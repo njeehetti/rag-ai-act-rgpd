@@ -26,11 +26,14 @@ class SentenceTransformerEmbedder:
     """
 
     def __init__(self, name: str = QWEN3_EMBEDDING, batch_size: int = 16) -> None:
-        from sentence_transformers import SentenceTransformer  # import lourd, différé
+        import torch  # imports lourds, différés
+        from sentence_transformers import SentenceTransformer
 
         self.name = name
         self._batch_size = batch_size
-        self._model = SentenceTransformer(name)
+        # float16 sur GPU : moitié moins de mémoire, sans perte mesurable pour la recherche.
+        kwargs = {"dtype": torch.float16} if torch.cuda.is_available() else {}
+        self._model = SentenceTransformer(name, model_kwargs=kwargs)
 
     def embed_documents(self, texts: list[str]) -> np.ndarray:
         return np.asarray(
