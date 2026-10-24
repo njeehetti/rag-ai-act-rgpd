@@ -75,3 +75,11 @@
 
 **Reste à faire**
 - Phase 2 : jeu d'évaluation (format, outil de revue Streamlit, validation par Njee).
+
+## 24/10/2026 — Phase 2 (en cours) : jeu d'évaluation
+
+- Outillage : `rag eval check | split | freeze` (`evalset.py`), page de relecture `make review`, test de gel par SHA-256.
+- 66 brouillons rédigés à partir des passages (16 factuelles, 8 définitions, 11 multi-articles, 10 multi-règlements, 8 hors corpus, 13 cas pratiques, dont 12 tagués `banque`). `rag eval check` : aucun problème après correction de deux questions « multi-articles » qui ne citaient qu'un article.
+- En lisant le corpus pour rédiger, deux défauts de parsing trouvés et corrigés : l'exposant de « 10^25 » (art. 51 §2) était supprimé comme un renvoi de note ; le texte d'interface CNIL (« Imprimer l'article », navigation entre fiches) était indexé. Le corpus passe à 1 779 passages ; **réindexation à faire** avant la Phase 3.
+- Constat utile pour l'évaluation : l'AI Act consolidé (2026) a déplacé des dates (haut risque annexe III au 2 décembre 2027) et ajouté des articles (4 bis, 5 §1 b bis/b ter). Des questions `piege-date` testent qu'on lit le corpus plutôt que la mémoire du LLM.
+- Reste : questions de l'auteur (au moins 15), relecture de toutes les questions, split, gel, tag `eval-v1`.

@@ -58,3 +58,9 @@ Sources : fiches Hugging Face des modèles, scores MMTEB publiés sur les fiches
 - **Choix :** `llm_num_ctx = 8192` et au plus 12 000 caractères d'extraits par prompt (`max_context_chars`). Un passage qui ne tient pas est écarté, sauf le premier, qui est tronqué. Un prompt ou une réponse tronqués sont signalés (`truncated`).
 - **Pourquoi :** avec 16k de contexte, qwen3:8b déborde des 8 Go de la RTX 4070 (20 % sur CPU, 11 à 20 s par réponse). Avec 8k, il tient à 100 % sur le GPU, et Ollama tronque sans erreur un prompt trop long, d'où le budget.
 - **Écarté :** un modèle plus petit (qualité moindre en français juridique) ou une fenêtre de 16k avec déchargement partiel sur CPU (trop lent pour la démo).
+
+## D10 — Jeu d'évaluation : passages de référence, brouillons hors RAG, gel par empreinte
+
+- **Choix :** chaque question cite des identifiants de **passages**, pas de chunks. Les brouillons sont rédigés à partir du texte des passages, sans jamais interroger le RAG. Chaque question est relue par un humain sur une page Streamlit. Le split dev/test (15/65) est stratifié par type avec une graine fixe. Le gel se fait par empreinte SHA-256 vérifiée en test, plus le tag `eval-v1`.
+- **Pourquoi :** les passages restent valables quelle que soit la stratégie de découpage comparée en Phase 3. Des questions dérivées des sorties du RAG favoriseraient le système évalué. L'empreinte rend toute retouche après coup visible en CI.
+- **Écarté :** la génération automatique de questions par LLM sur des chunks (questions trop proches du texte, biais vers le retriever), et un split aléatoire non stratifié (dev sans question hors corpus possible).
