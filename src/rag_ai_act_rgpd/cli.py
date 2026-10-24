@@ -3,6 +3,7 @@
 import argparse
 import json
 import sys
+from collections import Counter
 from pathlib import Path
 
 from rag_ai_act_rgpd.fetch import fetch_all, verify
@@ -11,6 +12,8 @@ from rag_ai_act_rgpd.sources import ALL_SOURCES
 DATA_DIR = Path("data")
 RAW_DIR = DATA_DIR / "raw"
 MANIFEST = DATA_DIR / "manifest.json"
+DATASET = Path("eval") / "dataset.jsonl"
+DATASET_DIGEST = Path("eval") / "dataset.sha256"
 
 
 def main(argv: list[str] | None = None) -> None:
@@ -26,6 +29,13 @@ def main(argv: list[str] | None = None) -> None:
     commands.add_parser("index", help="parse, découpe et encode le corpus dans PostgreSQL")
     ask = commands.add_parser("ask", help="pose une question au RAG")
     ask.add_argument("question")
+    evaluation = commands.add_parser("eval", help="jeu d'évaluation (eval/dataset.jsonl)")
+    evaluation.add_argument(
+        "action",
+        choices=["check", "split", "freeze"],
+        help="check : contrôle le format et les passages ; split : tirage dev/test ; "
+        "freeze : vérifie les conditions et écrit l'empreinte SHA-256",
+    )
 
     args = parser.parse_args(argv)
     if args.command == "fetch":
@@ -40,6 +50,8 @@ def main(argv: list[str] | None = None) -> None:
         _index()
     elif args.command == "ask":
         _ask(args.question)
+    elif args.command == "eval":
+        _eval(args.action)
 
 
 def _index() -> None:
@@ -70,6 +82,31 @@ def _ask(question: str) -> None:
     if result.answer.invalid_citations:
         print("Citations invalides (hors contexte) :", ", ".join(result.answer.invalid_citations))
     print(f"\n{result.total_ms:.0f} ms (recherche {result.retrieval_ms:.0f} ms)")
+
+
+def _eval(action: str) -> None:
+    from rag_ai_act_rgpd import evalset
+    from rag_ai_act_rgpd.ingest import load_corpus
+
+    questions = evalset.load(DATASET)
+    if action == "split":
+        evalset.assign_splits(questions)
+        evalset.save(questions, DATASET)
+    corpus = {p.id: p for p in load_corpus(RAW_DIR, MANIFEST)}
+    problems = evalset.check(questions, corpus)
+    if action == "freeze":
+        problems += evalset.freeze_problems(questions)
+    counts: Counter[tuple[str, str]] = Counter((q.type, q.status) for q in questions)
+    for t in evalset.TYPES:
+        done = counts[(t, "validated")]
+        drafts = counts[(t, "draft")]
+        print(f"{t:<17} {done:>3}/{evalset.TARGETS[t]} validées, {drafts} brouillons")
+    print("\n".join(problems) or "aucun problème")
+    if problems:
+        raise SystemExit(1)
+    if action == "freeze":
+        DATASET_DIGEST.write_bytes(f"{evalset.digest(DATASET)}  dataset.jsonl\n".encode())
+        print(f"gelé : {DATASET_DIGEST}")
 
 
 if __name__ == "__main__":
