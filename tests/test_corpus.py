@@ -50,3 +50,8 @@ def test_every_manifest_source_yields_passages(corpus: list[Passage]) -> None:
         if (source_id if entry["file"].startswith("eurlex/") else entry["url"]) not in used
     ]
     assert missing == []
+
+
+def test_flop_threshold_keeps_its_exponent(corpus: list[Passage]) -> None:
+    art51 = next(p for p in corpus if p.id == "aiact:art51:p2")
+    assert art51.text.endswith("supérieure à 10^25.")

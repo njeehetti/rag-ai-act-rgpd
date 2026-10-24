@@ -422,6 +422,12 @@ def _collect(el: HtmlElement, out: list[str]) -> None:
         if el.tail:
             out.append(el.tail)
         return
+    # Exposant collé à un nombre (« 10<sup>25</sup> ») : une puissance, pas un renvoi de note.
+    if classes & _SUPERSCRIPTS and content.isdigit() and out and out[-1][-1:].isdigit():
+        out.append(f"^{content}")
+        if el.tail:
+            out.append(el.tail)
+        return
     if classes & _SKIPPED_CLASSES:
         if el.tail:
             out.append(el.tail)

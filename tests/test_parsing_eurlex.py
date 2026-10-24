@@ -4,11 +4,13 @@ import re
 from pathlib import Path
 
 import pytest
+from lxml import html
 
 from rag_ai_act_rgpd.parsing.eurlex import (
     AIACT_CONSOLIDATED,
     AIACT_RECITALS,
     RGPD,
+    _lines,
     parse_eurlex,
 )
 from rag_ai_act_rgpd.parsing.models import Passage
@@ -142,3 +144,12 @@ def test_footnote_references_leave_no_trace(rgpd: dict[str, Passage]) -> None:
     text = rgpd["rgpd:art4:pt25"].text
     assert "()" not in text
     assert text.endswith("du Parlement européen et du Conseil ;")
+
+
+def test_numeric_exponent_is_a_power_not_a_footnote() -> None:
+    # Art. 51 §2 : « 10<sup>25</sup> » opérations ; un renvoi de note détaché reste supprimé.
+    fragment = html.fragment_fromstring(
+        '<div>supérieure à 10<span class="superscript">25</span>. Voir le règlement '
+        '<span class="oj-super oj-note-tag">1</span> et n<span class="oj-super">o</span> 3.</div>'
+    )
+    assert _lines(fragment) == ["supérieure à 10^25. Voir le règlement et n° 3."]
