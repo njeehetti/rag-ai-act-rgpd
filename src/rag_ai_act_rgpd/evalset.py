@@ -23,7 +23,7 @@ Origin = Literal["njee", "proposee_validee"]
 Status = Literal["draft", "validated", "rejected"]
 Split = Literal["dev", "test"]
 
-TYPES: tuple[str, ...] = get_args(QuestionType)
+TYPES: tuple[QuestionType, ...] = get_args(QuestionType)
 TARGETS: dict[str, int] = {
     "factuelle": 20,
     "definition": 10,

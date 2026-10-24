@@ -1,4 +1,4 @@
-.PHONY: install lint format typecheck test check up down ui
+.PHONY: install lint format typecheck test check up down ui review
 
 install:
 	uv sync
@@ -27,3 +27,6 @@ down:
 
 ui:
 	uv run streamlit run src/rag_ai_act_rgpd/ui.py
+
+review:
+	uv run streamlit run src/rag_ai_act_rgpd/review.py
