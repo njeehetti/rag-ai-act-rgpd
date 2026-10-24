@@ -93,3 +93,12 @@ def test_homonym_headings_get_distinct_labels() -> None:
         "[CNIL, Titre, « Étape A », « Le principe »]",
         "[CNIL, Titre, « Étape B », « Le principe »]",
     ]
+
+
+def test_interface_text_is_not_doctrine() -> None:
+    page = _page(
+        "<h2>Le principe</h2><p>Imprimer l’article</p><p>Le texte utile.</p><p>Sommaire</p>"
+        "<p>Fiche suivante : Annoter les données></p><p>#Intelligence artificielle (IA)</p>"
+    )
+    [passage] = parse_cnil(page, "https://www.cnil.fr/fr/page")
+    assert passage.text == "Le texte utile."

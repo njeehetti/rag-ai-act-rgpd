@@ -27,6 +27,11 @@ DOCUMENT_ID = "cnil"
 # Fin du contenu éditorial : tout ce qui suit est de la navigation.
 _END_MARKERS = ("Ceci peut également vous intéresser", "Textes de référence", "Pour approfondir")
 _NOISE = re.compile(r"\s*(Déplier|Replier)\s*$")
+# Boutons, navigation entre fiches et mots-clés : du texte d'interface, pas de la doctrine.
+_BOILERPLATE = re.compile(
+    r"Imprimer l’article|Partager cette page par courriel|(Diminuer|Augmenter) la taille de la "
+    r"police|Sommaire|Consulter la version PDF|#.+|< ?Fiche précédente : .+|Fiche suivante : .+>"
+)
 _TEXT_TAGS = {"p", "li", "td", "th", "blockquote", "dt", "dd"}
 _LEVELS = {"h2": 0, "h3": 1, "h4": 2}
 _SLUG_WORDS = 8
@@ -52,7 +57,7 @@ def parse_cnil(content: bytes, url: str) -> list[Passage]:
     path: list[str] = []
     for el in _blocks(content_root):
         text = _clean(el.text_content())
-        if not text:
+        if not text or _BOILERPLATE.fullmatch(text):
             continue
         if el.tag in _LEVELS:
             if text.startswith(_END_MARKERS):
