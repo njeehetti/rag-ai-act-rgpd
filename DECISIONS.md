@@ -46,3 +46,15 @@ Sources : fiches Hugging Face des modèles, scores MMTEB publiés sur les fiches
 
 - **Pourquoi :** la même techno sert à l'UI de démo et à l'outil de revue du jeu d'évaluation (Phase 2).
 - **Écarté :** Gradio. Il n'apporte rien de plus ici, et ses Spaces gratuits sur CPU sont désormais payants.
+
+## D8 — Identifiants de passages CNIL fondés sur les titres parents
+
+- **Choix :** `cnil:{page}:{h2}:{h3}:{h4}`, un slug par niveau de titre. Au-delà de 8 mots, le slug est tronqué et suivi d'une empreinte SHA-1 de 4 caractères du titre complet. Le libellé de citation ajoute le titre parent quand deux sections d'une page portent le même titre (« Le principe », « En pratique »).
+- **Pourquoi :** le jeu d'évaluation référence des identifiants de passages. Avec un compteur par ordre d'apparition (`le-principe-2`), l'ajout d'une section par la CNIL décalait silencieusement les références. Les libellés en double empêchaient aussi de vérifier une citation.
+- **Écarté :** un hash du texte, qui change à chaque correction de la page, et un numéro d'ordre, instable.
+
+## D9 — Budget de contexte plutôt que fenêtre plus grande
+
+- **Choix :** `llm_num_ctx = 8192` et au plus 12 000 caractères d'extraits par prompt (`max_context_chars`). Un passage qui ne tient pas est écarté, sauf le premier, qui est tronqué. Un prompt ou une réponse tronqués sont signalés (`truncated`).
+- **Pourquoi :** avec 16k de contexte, qwen3:8b déborde des 8 Go de la RTX 4070 (20 % sur CPU, 11 à 20 s par réponse). Avec 8k, il tient à 100 % sur le GPU, et Ollama tronque sans erreur un prompt trop long, d'où le budget.
+- **Écarté :** un modèle plus petit (qualité moindre en français juridique) ou une fenêtre de 16k avec déchargement partiel sur CPU (trop lent pour la démo).

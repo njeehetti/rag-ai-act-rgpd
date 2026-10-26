@@ -1,4 +1,4 @@
-.PHONY: install lint format typecheck test check up down
+.PHONY: install lint format typecheck test check up down ui
 
 install:
 	uv sync
@@ -24,3 +24,6 @@ up:
 
 down:
 	docker compose down
+
+ui:
+	uv run streamlit run src/rag_ai_act_rgpd/ui.py
